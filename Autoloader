@@ -1,0 +1,128 @@
+## Configuring Auto Loader for Reliable Ingestion
+
+When using **Databricks Auto Loader**, several configuration options can be applied to make streaming ingestion **reliable, stable, and scalable**, especially when dealing with large volumes of files or evolving schemas.
+
+---
+
+## 1. Setting Maximum Bytes per Trigger
+
+If you are ingesting **large files** and experience:
+
+* Long micro-batch execution times
+* Memory pressure or executor failures
+
+You can limit the amount of data processed in each micro-batch using:
+
+### `cloudFiles.maxBytesPerTrigger`
+
+This option controls the **maximum total size of files** processed per micro-batch, helping keep batch durations predictable and improving pipeline stability.
+
+### Example: Limit each micro-batch to 1 GB
+
+```python
+spark.readStream \
+     .format("cloudFiles") \
+     .option("cloudFiles.format", "<source_format>") \
+     .option("cloudFiles.maxBytesPerTrigger", "1g") \
+     .load("/path/to/files")
+```
+
+✅ **Benefit:** Prevents large bursts of data from overwhelming the cluster.
+
+---
+
+## 2. Handling Bad Records
+
+When ingesting **JSON or CSV** files, malformed or invalid records can cause parsing errors. Auto Loader allows you to **quarantine bad records** instead of failing the stream.
+
+### Common causes of bad records:
+
+* Malformed syntax (missing brackets, extra commas)
+* Schema mismatches (wrong data types, missing fields)
+
+### `badRecordsPath`
+
+Invalid records are redirected to a separate location for later inspection.
+
+### Example: Capturing bad JSON records
+
+```python
+spark.readStream \
+     .format("cloudFiles") \
+     .option("cloudFiles.format", "json") \
+     .option("badRecordsPath", "/path/to/quarantine") \
+     .schema("id INT, value DOUBLE") \
+     .load("/path/to/files")
+```
+
+✅ **Benefit:** Stream continues processing valid records without interruption.
+
+---
+
+## 3. File Filters
+
+To ingest **only specific files** (for example, images or files with a particular extension), Auto Loader supports file-level filtering.
+
+### `pathGlobFilter`
+
+This option filters input files based on a glob pattern.
+
+### Example: Ingest only PNG files
+
+```python
+spark.readStream \
+     .format("cloudFiles") \
+     .option("cloudFiles.format", "binaryFile") \
+     .option("pathGlobFilter", "*.png") \
+     .load("/path/to/files")
+```
+
+✅ **Benefit:** Avoids unnecessary processing of unrelated files.
+
+---
+
+## 4. Schema Evolution
+
+Auto Loader can automatically detect **new columns** added to incoming data over time.
+
+### `cloudFiles.schemaEvolutionMode`
+
+This option controls how schema changes are handled during ingestion.
+
+```python
+spark.readStream \
+     .format("cloudFiles") \
+     .option("cloudFiles.format", "<source_format>") \
+     .option("cloudFiles.schemaEvolutionMode", "<mode>") \
+     .load("/path/to/files")
+```
+
+---
+
+### Supported Schema Evolution Modes
+
+#### `addNewColumns` (Default behavior when schema is NOT provided)
+
+* New columns are automatically added to the schema.
+* If a new column is detected:
+
+  * The stream **temporarily fails** with an `UnknownFieldException`
+  * Auto Loader **updates the schema location** by merging the new column
+  * On the **next run**, the stream succeeds with the updated schema
+
+📌 **Important Notes:**
+
+* `addNewColumns` is the **default** when **no schema is provided**
+* When a schema **is explicitly provided**, the default mode is `none`
+* `addNewColumns` is **not allowed** when a schema is explicitly defined
+
+---
+
+## Key Takeaways
+
+* **`cloudFiles.maxBytesPerTrigger`** → Controls micro-batch size and stability
+* **`badRecordsPath`** → Safely isolates malformed records
+* **`pathGlobFilter`** → Filters files at ingestion time
+* **Schema evolution** → Enables safe handling of changing data structures
+
+This configuration ensures **fault-tolerant, scalable, and production-ready** Auto Loader pipelines.
