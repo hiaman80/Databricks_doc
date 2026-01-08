@@ -1,0 +1,1 @@
+1.  To convert binary data to human readable format : cast(col1 AS STRING)
