@@ -1,0 +1,108 @@
+## Predictive Optimization (Databricks)
+
+**Predictive Optimization** is an **AI-driven Databricks feature** that automatically performs table maintenance operations for **Unity Catalog–managed tables**.
+It removes the need for manual tuning while improving **query performance** and reducing **storage costs**.
+
+---
+
+## What Predictive Optimization Does
+
+When enabled, Predictive Optimization continuously monitors table usage patterns and automatically runs the following maintenance operations:
+
+### 1. OPTIMIZE (Incremental Clustering)
+
+* Triggers **incremental clustering** on enabled tables.
+* If **automatic liquid clustering** is enabled, Databricks may:
+
+  * Select **new clustering keys**
+  * Re-cluster data based on evolving query patterns
+
+📌 **Note:**
+
+* `OPTIMIZE` executed by Predictive Optimization **does not run ZORDER**.
+
+---
+
+### 2. VACUUM
+
+* Automatically removes **data files no longer referenced** by the table.
+* Helps:
+
+  * Reduce storage costs
+  * Prevent accumulation of obsolete files
+
+---
+
+### 3. ANALYZE
+
+* Triggers **incremental updates of table statistics**.
+* These statistics are used by the **Spark query optimizer** to:
+
+  * Generate efficient query execution plans
+  * Improve query performance
+
+See: `ANALYZE TABLE`
+
+---
+
+## Enabling Predictive Optimization
+
+### Default Behavior
+
+* Predictive Optimization is **enabled by default for new Databricks accounts**.
+
+---
+
+### Account-Level Configuration
+
+To manually enable or disable it:
+
+* Navigate to **Feature Enablement** in the **Databricks Accounts Console**
+
+---
+
+### Catalog-Level Configuration
+
+```sql
+ALTER CATALOG <catalog_name>
+ENABLE PREDICTIVE OPTIMIZATION;
+
+ALTER CATALOG <catalog_name>
+DISABLE PREDICTIVE OPTIMIZATION;
+```
+
+---
+
+### Schema-Level Configuration
+
+```sql
+ALTER SCHEMA <schema_name>
+ENABLE PREDICTIVE OPTIMIZATION;
+
+ALTER SCHEMA <schema_name>
+DISABLE PREDICTIVE OPTIMIZATION;
+```
+
+---
+
+## Best Practice Recommendation
+
+Databricks **strongly recommends enabling Predictive Optimization** for all **Unity Catalog–managed tables** to:
+
+* Simplify data maintenance
+* Improve query performance automatically
+* Reduce long-term storage costs
+* Eliminate the need for manual `OPTIMIZE`, `VACUUM`, and `ANALYZE` jobs
+
+---
+
+## Summary
+
+| Feature            | Benefit                            |
+| ------------------ | ---------------------------------- |
+| Automatic OPTIMIZE | Better clustering & faster queries |
+| Automatic VACUUM   | Lower storage costs                |
+| Automatic ANALYZE  | Smarter query planning             |
+| AI-driven          | Adapts to usage patterns           |
+| Zero manual tuning | Operational simplicity             |
+
