@@ -1,0 +1,33 @@
+1. CDF
+2. Which of the following approaches allows to correctly perform streaming deduplication?
+3. A data engineering team is tasked with anonymizing sensitive customer data in their ETL pipeline. They need to generate a SHA-2 hash for a column holding customer credit card numbers. The team is aware that Spark’s sha2 function supports certain bit lengths but not all arbitrary numbers.
+    Which of the following SHA-2 function calls would fail due to an invalid bit length?
+Ans: In Apache Spark, the sha2(expression, bitLength) returns a checksum of the SHA-2 family as a hex string of an expression. 
+It only supports specific SHA-2 bit lengths: 224, 256, 384, and 512. Any other bit length, such as 128, is invalid and would cause the function to fail. 
+Notice that bitLength 0 is equivalent to 256.
+So, sha2(credit_card, 128) would fail due to an unsupported bit length.
+4. SELECT
+    identity_metadata.run_as,
+    sku_name,
+    usage_date,
+    usage_quantity
+FROM system.billing.usage
+WHERE usage_unit = 'DBU'
+5. applyInPandas
+6. This query aggregates the DBU usage by the user who ran the workload (run_as) and the specific resource type (sku_name) on a daily basis.
+
+
+
+Here's a breakdown of why:
+
+system.billing.usage: This is a system table that tracks billable usage in detail.
+
+usage_unit = 'DBU': This explicitly filters the records to only show consumption measured in Databricks Units (DBUs), the standard unit of consumption for compute.
+
+identity_metadata.run_as: This column logs the user or service principal (identity) who ran the workload. This is the per user component.
+
+sku_name: This column identifies the specific type of computing resource (e.g., ALL_PURPOSE_COMPUTE, JOBS_COMPUTE, SERVERLESS_SQL) that consumed the DBUs. This gives the type of computing resource detail.
+
+usage_quantity: This is the actual DBU consumption amount.
+
+usage_date: This provides the daily temporal detail.
