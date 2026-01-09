@@ -1,0 +1,42 @@
+Pandas UDFs on Groups
+In Apache Spark, you can apply custom Pandas-based operations on grouped data within a PySpark DataFrame. This allows you to perform group-level operations using familiar Pandas code while still benefiting from Spark’s distributed processing engine. To achieve this, use the applyInPandas function.
+
+
+
+Syntax
+
+A typical syntax looks like this:
+
+df.groupby("key").applyInPandas(custom_function, schema)
+
+Here, custom_function is a user-defined function (UDF) that accepts a Pandas DataFrame and returns another, while schema defines the structure of the output DataFrame. Spark handles the parallelization by splitting the data by groups and running the UDF across worker nodes. Each group is sent as a pandas DataFrame to the UDF, which preserves row order and allows running custom, stateful algorithms (e.g., rolling windows, and cumulative calculations).
+
+
+
+Example
+
+We can use applyInPandas on our customers_orders table to calculate the average quantity of orders per country. Here’s an example in PySpark:
+
+
+
+import pandas as pd
+ 
+schema = "country STRING, avg_quantity DOUBLE"
+ 
+def avg_per_country(pdf):
+    return pd.DataFrame({
+        "country": [pdf["country"].iloc[0]],
+        "avg_quantity": [pdf["quantity"].mean()]
+    })
+ 
+df = spark.table("customers_orders")
+result = df.groupBy("country").applyInPandas(avg_per_country, schema)
+display(result)
+
+
+The output will display the average quantity per country, as follows:
+
+
+
+
+In practice, applyInPandas is widely used in data science workflows, particularly when analysts want to integrate Pandas’ rich ecosystem (such as NumPy, SciPy, or scikit-learn) into scalable Spark pipelines.
