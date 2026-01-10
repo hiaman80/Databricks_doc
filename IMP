@@ -1,1 +1,3 @@
 1.  To convert binary data to human readable format : cast(col1 AS STRING)
+2.  For Cron Expressions : freeformatter.com under cron expression generators.
+3.  Can Manage and Can Manage Run are 2 different grant permissions available in JOBs.
