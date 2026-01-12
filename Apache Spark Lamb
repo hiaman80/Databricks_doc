@@ -1,0 +1,75 @@
+### **Module 1: Evolution and Fundamentals**
+
+* **The "Why" Behind Spark:**
+* **MapReduce Drawbacks:** MapReduce was slow because it wrote data to the disk (HDFS) after every map or reduce step. This "Disk I/O" was a massive bottleneck.
+* **Spark’s Solution:** Spark processes data **in-memory**. It is roughly 100x faster than MapReduce for certain applications.
+
+
+* **The Original Creators:** Spark was born at UC Berkeley’s AMPLab. The team later founded **Databricks**, which is now the industry standard for managed Spark.
+* **The Unified Engine:** Spark is not just for one thing; it handles Batch processing, Real-time streaming (Structured Streaming), Machine Learning (MLlib), and Graph processing (GraphX).
+
+### **Module 2: Internal Architecture (The "Under the Hood" Details)**
+
+* **The Master-Slave Model:**
+* **Driver Program:** The "Brain." It runs the `main()` function, creates the `SparkContext`, and converts user code into a **DAG** (Directed Acyclic Graph).
+* **Executors:** The "Workers." These are JVM processes that live on worker nodes. They execute tasks and store data in memory or disk.
+* **Cluster Manager:** The "Resource Allocator." Options include **Standalone**, **YARN** (Hadoop), **Mesos**, and **Kubernetes**.
+
+
+* **Deployment Modes:**
+* **Client Mode:** The Driver runs on the machine where the script was submitted. (Good for interactive debugging).
+* **Cluster Mode:** The Driver runs inside a worker node in the cluster. (Good for production as it survives if your local laptop disconnects).
+
+
+
+### **Module 3: Logical Execution (Jobs, Stages, and Tasks)**
+
+* **The Hierarchy:**
+1. **Job:** Spark creates a Job whenever an **Action** is called.
+2. **Stage:** A Job is broken into Stages based on "Shuffle" boundaries.
+3. **Task:** Each Stage is broken into Tasks. A Task is the smallest unit of work, executed on one partition of data by one thread in an executor.
+
+
+* **The DAG (Directed Acyclic Graph):** A logical map of every step the data takes. You can view this in the **Spark UI** to find where the "bottlenecks" are.
+
+### **Module 4: Transformations vs. Actions**
+
+* **Lazy Evaluation:** Spark doesn't do anything when you write a transformation (like `.select()` or `.filter()`). It just records the instruction. This allows the **Catalyst Optimizer** to look at the whole plan and find the fastest way to run it before starting.
+* **Narrow Transformations:** Data stays in the same partition (e.g., `Map`, `Filter`, `Union`). No network movement = Very fast.
+* **Wide Transformations (The Shuffle):** Data needs to move across the network to different executors (e.g., `groupBy`, `join`, `orderBy`). This is the most "expensive" part of Spark.
+
+### **Module 5: Memory Management Deep Dive**
+
+* **Executor Memory Breakdown:**
+* **Reserved Memory:** (Fixed ~300MB) for Spark's internal needs.
+* **User Memory:** For your own data structures and UDFs.
+* **Unified Memory:** The most important part. It is shared between **Storage Memory** (for caching) and **Execution Memory** (for joins/shuffles).
+
+
+* **Dynamic Occupancy:** If Execution memory is free, Storage memory can borrow it, and vice versa. This prevents "Out of Memory" (OOM) errors.
+
+### **Module 6: Join Strategies**
+
+* **Broadcast Hash Join:** If one table is small (default <10MB), Spark sends the entire small table to every executor. This avoids a "Shuffle" and is the fastest join.
+* **Shuffle Hash Join:** Shuffles both tables so rows with the same key end up on the same executor.
+* **Sort-Merge Join:** The default for large tables. It shuffles data, sorts it, and then merges. It is very stable and handles large data well.
+
+### **Module 7: Advanced Optimizations (Spark 3.x Features)**
+
+* **AQE (Adaptive Query Execution):** Spark now looks at the data *during* the job. If it realizes a shuffle resulted in tiny partitions, it merges them automatically to save time.
+* **Dynamic Partition Pruning (DPP):** In a join between a Fact table (large) and a Dimension table (small), Spark uses the filter on the small table to skip reading unnecessary partitions of the large table at the source.
+* **Data Skewness & Salting:** When one partition has 90% of the data, one executor works while others sit idle. **Salting** adds a random number to the join keys to "break up" the big partition and spread it across executors.
+
+### **Module 8: Storage Levels**
+
+* **Cache vs. Persist:**
+* `.cache()` is a shortcut for `.persist(MEMORY_AND_DISK)`.
+* `.persist()` allows you to choose specific levels like `DISK_ONLY`, `MEMORY_ONLY_SER` (Serialized to save space), or `OFF_HEAP`.
+
+
+
+### **Module 9: Troubleshooting & Best Practices**
+
+* **Edge Nodes:** The "Gateway" machine where you submit your jobs from. It shouldn't do the heavy lifting but acts as the bridge to the cluster.
+* **OOM (Out of Memory) Errors:** Usually caused by "Data Skew" or "Big Broadcasts."
+* **Garbage Collection (GC):** Tuning the JVM to clean up memory more efficiently to avoid long pauses in processing.
