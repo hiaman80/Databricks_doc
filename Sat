@@ -31,3 +31,5 @@ sku_name: This column identifies the specific type of computing resource (e.g., 
 usage_quantity: This is the actual DBU consumption amount.
 
 usage_date: This provides the daily temporal detail.
+
+5. Qurantine rule negation logic.
