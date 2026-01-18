@@ -1,0 +1,12 @@
+1.  In the event log table for LDP* pipelines, the data quality results are logged under events of type 'flow_progress' and stored inside the details column in a nested JSON structure:
+
+
+
+details:flow_progress: contains information about a pipeline’s execution progress
+
+details:flow_progress.data_quality: contains the data quality results (expectations, dropped_records, etc.)
+
+details:flow_progress:data_quality.expectations: specifically holds the expectation results
+
+* Databricks has recenlty open-sourced this solution, integrating it into the Apache Spark ecosystem under the name Spark Declarative Pipelines (SDP).
+
