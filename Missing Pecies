@@ -12,3 +12,56 @@ details:flow_progress:data_quality.expectations: specifically holds the expectat
 
 2.  The “validate” option in the notebook identifies syntax or configuration errors in the pipeline definition before execution, reducing the risk of runtime failures or writing partial data.
 
+3.  dlt.expect_all enforces all the specified data quality rules, writes both valid and invalid records to the target table, and captures metrics about any rule violations.
+
+
+
+dlt.expect would not fully meet the requirements because it applies expectations individually but doesn’t automatically enforce all of them together as a group. Similarly, dlt.expect_or_drop removes individual invalid records, and dlt.expect_or_fail stops the pipeline on individual rule violations. You can group multiple expectations together and specify collective actions using the functions dlt.expect_all_or_drop, and dlt.expect_all_or_fail.
+
+
+
+Note: Databricks has recenlty open-sourced this solution, integrating it into the Apache Spark ecosystem under the name Spark Declarative Pipelines (SDP).
+
+4.  DataFrameWriter.mode defines the writing behaviour when data or table already exists.
+
+Options include:
+
+append: Append contents of the DataFrame to existing data.
+
+overwrite: Overwrite existing data.
+
+error or errorifexists: Throw an exception if data already exists.
+
+ignore: Silently ignore this operation if data already exists.
+
+
+
+This errorifexists or error is the default save mode. If the table already exists, it will throw the error message Error: pyspark.sql.utils.AnalysisException: table already exists.
+
+
+
+The "employees_performance" table has a date column. So, in order to be able to compare employees' performance across time, each new batch of data with new date should be appended into the table using the append mode.
+
+5.  Reading table’s changes, captured by CDF, using spark.read means that you are reading them as a static source. So, each time you run the query, all table’s changes (starting from the specified startingVersion) will be read.
+
+
+
+The query in the question then writes the data in mode “overwrite” to the target table, which completely overwrites the table at each execution.
+
+6.  The Workspace Jobs UI does not allow data engineers to programmatically trigger a multi-task job run. It’s a graphical interface that requires manual interaction and cannot be used for automated or code-based job execution.
+
+
+
+While the REST API, Command-line interface (CLI), and Databricks SDKs all provide programmatic ways to run jobs.
+
+7.  Python wheel is a binary distribution format for installing custom Python code packages on Databricks Clusters.
+
+
+
+A wheel is a ZIP-format archive with the .whl extension.
+
+8.  The next step the team should take is to create a foreign catalog in Unity Catalog using the existing mysql_connection, as Lakehouse Federation in Databricks allows Unity Catalog to register external data sources like MySQL as foreign catalogs. 
+This makes the tables accessible and queryable in a governed, secure way without moving the data, which aligns with the team’s goal.
+
+9.  Databricks Asset Bundles are a feature of the Databricks CLI. To enable the CLI to authenticate to Databricks without managing Databricks secrets,
+  it’s recommended to use OAuth token federation for a Databricks service principal in the target workspace.
