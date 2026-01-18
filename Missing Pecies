@@ -10,3 +10,5 @@ details:flow_progress:data_quality.expectations: specifically holds the expectat
 
 * Databricks has recenlty open-sourced this solution, integrating it into the Apache Spark ecosystem under the name Spark Declarative Pipelines (SDP).
 
+2.  The “validate” option in the notebook identifies syntax or configuration errors in the pipeline definition before execution, reducing the risk of runtime failures or writing partial data.
+
