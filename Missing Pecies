@@ -104,3 +104,19 @@ This makes the tables accessible and queryable in a governed, secure way without
     Table must have predictive optimization enabled
     
     Predictive optimization provides the system with insights on access patterns, which Liquid Clustering leverages to automatically optimize data layout.
+
+15.  Scheduling clusters to start and stop at specific times is not supported with cluster policies.
+
+    Cluster policies are primarily designed to enforce consistent configurations, manage library installations, control costs by setting limits and defaults on cluster creation.
+
+16.  You can configure two types of cluster permissions:
+
+    1- The ‘Allow cluster creation’ entitlement controls your ability to create clusters.
+    2- Cluster-level permissions control your ability to use and modify a specific cluster. 
+    There are four permission levels for a cluster: No Permissions, Can Attach To, Can Restart, and Can Manage.
+
+17.  Databricks redacts secret values that are read using dbutils.secrets.get(). When displayed in notebook cell output, the secret values are replaced with [REDACTED] string.
+      
+      
+      
+      However, is there a workaround to print the values of Databricks secrets in plain text by Iterating through the secret and printing each character.
