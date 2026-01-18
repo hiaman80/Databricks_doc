@@ -16,7 +16,9 @@ details:flow_progress:data_quality.expectations: specifically holds the expectat
 
 
 
-dlt.expect would not fully meet the requirements because it applies expectations individually but doesn’t automatically enforce all of them together as a group. Similarly, dlt.expect_or_drop removes individual invalid records, and dlt.expect_or_fail stops the pipeline on individual rule violations. You can group multiple expectations together and specify collective actions using the functions dlt.expect_all_or_drop, and dlt.expect_all_or_fail.
+dlt.expect would not fully meet the requirements because it applies expectations individually but doesn’t automatically enforce all of them together as a group. 
+Similarly, dlt.expect_or_drop removes individual invalid records, and dlt.expect_or_fail stops the pipeline on individual rule violations.
+You can group multiple expectations together and specify collective actions using the functions dlt.expect_all_or_drop, and dlt.expect_all_or_fail.
 
 
 
@@ -65,3 +67,40 @@ This makes the tables accessible and queryable in a governed, secure way without
 
 9.  Databricks Asset Bundles are a feature of the Databricks CLI. To enable the CLI to authenticate to Databricks without managing Databricks secrets,
   it’s recommended to use OAuth token federation for a Databricks service principal in the target workspace.
+
+10.  The correct command is databricks bundle generate, because it allows the data engineer to generate bundle configuration for a resource that already exists in your Databricks workspace. 
+    This process generates a YAML definition of a job, pipeline, app, or dashboard and automatically downloads any artifacts it references, such as notebooks.
+11.  Databricks-to-Databricks Delta Sharing enables secure, open, and real-time sharing of tables, notebooks, volumes, and ML models with other Databricks clients. 
+    This does not require them to have access to the same Databricks account or workspace. With Unity Catalog, the company can ensure fine-grained access control and governance. 
+    This approach is efficient, scalable, and adheres to enterprise-grade security standards.
+
+12.  Data engineers must understand how materializing results is different between views and tables on Databricks, and how to reduce total compute and storage cost associated with each materialization depending on the scenario.
+
+
+
+    Consider using a view when:
+    
+    Your query is not complex. Because views are computed on demand, the view is re-computed every time the view is queried. 
+    So, frequently querying complex queries with joins and subqueries increases compute costs
+    
+    You want to reduce storage costs. Views do not require additional storage resources.
+    
+    Consider using a gold table when:
+    
+    Multiple downstream queries consume the table, so you want to avoid re-computing complex ad-hoc queries every time.
+    
+    Query results should be computed incrementally from a data source that is continuously or incrementally growing.
+
+13.   The correct Databricks CLI command that allows a data engineer to list all runs of a job that started at or after a specific time is databricks jobs list-runs --job-id <job-id> --start-time-from <time-value>, 
+      as --start-time-from is the proper parameter used to filter job runs based on their start time in the Databricks CLI.
+14.  To enable Automatic Liquid Clustering on a Delta table in Databricks, two prerequisites are required:
+
+
+
+    Table must be a Unity Catalog-managed table
+    
+    Automatic Liquid Clustering works only on tables managed by Unity Catalog. External tables are currently not supported.
+    
+    Table must have predictive optimization enabled
+    
+    Predictive optimization provides the system with insights on access patterns, which Liquid Clustering leverages to automatically optimize data layout.
