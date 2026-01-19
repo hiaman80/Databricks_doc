@@ -129,30 +129,13 @@ This makes the tables accessible and queryable in a governed, secure way without
 30.  The OPTIMIZE command compact small data files into larger ones. The default value is 1073741824, which sets the size to 1 GB.
 31.  Stream-static joins take advantage of Delta Lake guarantee that the latest version of the static delta table is returned each time it is queried in a join operation with a data stream.
 32.  A Delta Sharing identifier is a unique string used in Databricks-to-Databricks sharing to identify a recipient's Unity Catalog metastore. This identifier allows the data provider to grant access to shared data.
-
-
-
       The format of the sharing identifier is:
-      
       <cloud>:<region>:<uuid>
-      
-      
-      
       Example:
-      
       aws:us-west-2:19a84bee-54bc-43a2-87de-023d0ec16016
-      
-      
-      
       In this example:
-      
       aws: represents the cloud provider (Amazon Web Services).
-      
       us-west-2: represents the specific AWS region.
-      
       19a84bee-54bc-43a2-87de-023d0ec16016: is the Universally Unique Identifier (UUID) of the recipient's Unity Catalog metastore.
-      
-      
-      
       Recipients can obtain their sharing identifier from their Databricks workspace using Catalog Explorer or by running a SQL query like SELECT CURRENT_METASTORE();. 
       This identifier is then provided to the data provider, who uses it to create a recipient and grant access to shares.
