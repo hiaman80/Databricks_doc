@@ -145,3 +145,4 @@ This makes the tables accessible and queryable in a governed, secure way without
     - Optimized writes: with this feature enabled, Databricks attempts to write out 128 MB files for each table partition.
     - Auto compaction: this will check after an individual write, if files can further be compacted.
       If yes, it runs an OPTIMIZE job with 128 MB file sizes (instead of the 1 GB file size used in the standard OPTIMIZE)
+34.  Manual Optimize : 1 GB, Auto Optimize : 128 MB
