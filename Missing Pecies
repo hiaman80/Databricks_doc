@@ -154,3 +154,8 @@ This makes the tables accessible and queryable in a governed, secure way without
     The users_target view, on the other hand, is a virtual layer over this internal table that presents the current state of the data as a clean, queryable snapshot.  
     This allows the CDC logic to remain encapsulated and transparent.
     * Databricks has recenlty open-sourced this solution, integrating it into the Apache Spark ecosystem under the name Spark Declarative Pipelines (SDP).
+36.  Predictive Optimization in Databricks Unity Catalog automatically optimizes managed tables in Unity Catalog by:
+
+      Running background maintenance tasks like VACUUM, OPTIMIZE, and ANALYZE to reduce fragmentation and improve performance.
+      
+      Collecting table statistics during writes, which helps the query optimizer make better decisions and improve query speed.
