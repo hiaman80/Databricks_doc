@@ -139,3 +139,9 @@ This makes the tables accessible and queryable in a governed, secure way without
       19a84bee-54bc-43a2-87de-023d0ec16016: is the Universally Unique Identifier (UUID) of the recipient's Unity Catalog metastore.
       Recipients can obtain their sharing identifier from their Databricks workspace using Catalog Explorer or by running a SQL query like SELECT CURRENT_METASTORE();. 
       This identifier is then provided to the data provider, who uses it to create a recipient and grant access to shares.
+33.  Auto Optimize is a functionality that allows Delta Lake to automatically compact small data files of Delta tables.
+      This can be achieved during individual writes to the Delta table.
+    Auto optimize consists of 2 complementary operations:
+    - Optimized writes: with this feature enabled, Databricks attempts to write out 128 MB files for each table partition.
+    - Auto compaction: this will check after an individual write, if files can further be compacted.
+      If yes, it runs an OPTIMIZE job with 128 MB file sizes (instead of the 1 GB file size used in the standard OPTIMIZE)
