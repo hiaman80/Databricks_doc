@@ -159,3 +159,6 @@ This makes the tables accessible and queryable in a governed, secure way without
       Running background maintenance tasks like VACUUM, OPTIMIZE, and ANALYZE to reduce fragmentation and improve performance.
       
       Collecting table statistics during writes, which helps the query optimizer make better decisions and improve query speed.
+37.  In PySpark, to verify the equality of two DataFrames, the correct function to use is pyspark.testing.assertDataFrameEqual(actual, expected). 
+      This function compares the two DataFrames element-wise, checking for exact equality by default. It allows for optional parameters to control the comparison behavior,
+      such as ignoreColumnOrder and ignoreNullable. If the DataFrames do not match, the function raises a PySparkAssertionError and provides a detailed diff of the differences.
