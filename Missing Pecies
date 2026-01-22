@@ -168,3 +168,6 @@ This makes the tables accessible and queryable in a governed, secure way without
       | `/api/2.1/jobs/runs/list`       | Lists multiple runs, not a specific run  |
       | `/api/2.0/jobs/runs/get-output` | Returns logs/output, not metadata        |
       | /api/2.1/jobs/runs/get          | Returns metadata                         |
+39.  Databricks-to-Databricks table shares can improve performance by enabling history sharing using the WITH HISTORY clause. 
+Sharing history improves performance by leveraging temporary security credentials from your cloud storage, 
+scoped-down to the root directory of the provider's shared Delta table, resulting in performance that is comparable to direct access to source tables.
