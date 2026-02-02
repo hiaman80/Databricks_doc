@@ -171,3 +171,32 @@ This makes the tables accessible and queryable in a governed, secure way without
 39.  Databricks-to-Databricks table shares can improve performance by enabling history sharing using the WITH HISTORY clause. 
 Sharing history improves performance by leveraging temporary security credentials from your cloud storage, 
 scoped-down to the root directory of the provider's shared Delta table, resulting in performance that is comparable to direct access to source tables.
+39. The signature of the window function in Spark SQL is:
+
+    window(time_column, window_size, slide_interval, starting_offset)
+    
+    
+    
+    window_size: how long each window lasts.
+    
+    slide_interval (sometimes called step): how often a new window starts.
+    
+    starting_offset: shifts all windows forward or backward in time.
+    
+    
+    
+    In this question, the function was:
+    
+    window(event_time, '10 minutes', '10 minutes', '3 minutes')
+    
+    
+    
+    window_size = '10 minutes' → Each window spans 10 minutes.
+    
+    slide_interval = '10 minutes' → Windows slide every 10 minutes, i.e., non-overlapping.
+    
+    starting_offset= '3 minutes' → Windows start 3 minutes later than the natural alignment.
+    
+    
+
+    So, the query is computing 10-minute windows for each server, with a 3-minute offset, and aggregating MIN and MAX CPU usage in each window.
